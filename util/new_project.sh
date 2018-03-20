@@ -7,20 +7,18 @@ if [ -z "$1" ]; then
 	exit 1
 fi
 
+cd "$(dirname "$0")/.."
+
 KEYBOARD=$1
 KEYBOARD_UPPERCASE=$(echo $1 | awk '{print toupper($0)}')
 
-mkdir keyboard/$1
-mkdir keyboard/$1/keymaps
-sed -e "s;%KEYBOARD%;$KEYBOARD;g" -e "s;%KEYBOARD_UPPERCASE%;$KEYBOARD_UPPERCASE;g" quantum/template/template.h > keyboard/$KEYBOARD/$KEYBOARD.h
-sed -e "s;%KEYBOARD%;$KEYBOARD;g" quantum/template/template.c > keyboard/$KEYBOARD/$KEYBOARD.c
-sed -e "s;%KEYBOARD%;$KEYBOARD;g" quantum/template/config.h > keyboard/$KEYBOARD/config.h
-sed -e "s;%KEYBOARD%;$KEYBOARD;g" quantum/template/README.md > keyboard/$KEYBOARD/README.md
-sed -e "s;%KEYBOARD%;$KEYBOARD;g" quantum/template/Makefile > keyboard/$KEYBOARD/Makefile
-sed -e "s;%KEYBOARD%;$KEYBOARD;g" quantum/template/keymaps/default.c > keyboard/$KEYBOARD/keymaps/default.c
+cp -r quantum/template keyboards/$KEYBOARD
+mv keyboards/$KEYBOARD/template.c keyboards/$KEYBOARD/$KEYBOARD.c
+mv keyboards/$KEYBOARD/template.h keyboards/$KEYBOARD/$KEYBOARD.h
+find keyboards/${KEYBOARD} -type f -exec sed -i'' -e "s;%KEYBOARD%;$KEYBOARD;g" {} \;
+find keyboards/${KEYBOARD} -type f -exec sed -i'' -e "s;%KEYBOARD_UPPERCASE%;$KEYBOARD_UPPERCASE;g" {} \;
 
 echo "######################################################"
-echo "# keyboard/$KEYBOARD project created. To start"
-echo "# working on things, use the following command:"
-echo "# cd keyboard/$KEYBOARD"
+echo "# /keyboards/$KEYBOARD project created. To start"
+echo "# working on things, cd into keyboards/$KEYBOARD"
 echo "######################################################"
